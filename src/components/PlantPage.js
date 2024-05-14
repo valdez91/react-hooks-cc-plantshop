@@ -8,6 +8,10 @@ function PlantPage() {
   const [filteredPlants, setFilteredPlants] = useState([]);
 
   useEffect(() => {
+    fetchPlants(); // Fetch plants when component mounts
+  }, []);
+
+  const fetchPlants = () => {
     fetch("http://localhost:6001/plants")
       .then((response) => response.json())
       .then((data) => {
@@ -17,7 +21,7 @@ function PlantPage() {
       .catch((error) => {
         console.error("Error fetching plants:", error);
       });
-  }, []);
+  };
 
   const handleSearch = (query) => {
     const filtered = plants.filter((plant) =>
@@ -26,9 +30,16 @@ function PlantPage() {
     setFilteredPlants(filtered);
   };
 
+  const handleAddPlant = (newPlant) => {
+    // Add the new plant to the plants array
+    setPlants([...plants, newPlant]);
+    // Update filteredPlants to include the new plant
+    setFilteredPlants([...filteredPlants, newPlant]);
+  };
+
   return (
     <main>
-      <NewPlantForm />
+      <NewPlantForm onAddPlant={handleAddPlant} />
       <Search onSearch={handleSearch} />
       <PlantList plants={filteredPlants} />
     </main>
